@@ -1,0 +1,440 @@
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Using exactly the links you provided
+const subjects = [
+  { 
+    name: "Organizational Behavior (OB)", 
+    link: "https://drive.google.com/drive/folders/1Ann6lNbUftdthSSflubjHEDYoBHb8dlW?usp=sharing", 
+    color: "from-rose-500 to-red-600", 
+    icon: "📊",
+    description: "Study of human behavior in organizations"
+  },
+  { 
+    name: "Marketing Management (MM)", 
+    link: "https://drive.google.com/drive/folders/150Jj6WNMiUjcsYLQFVED9KKb9e-jb11E?usp=sharing", 
+    color: "from-blue-400 to-indigo-600", 
+    icon: "🎯",
+    description: "Strategies for effective marketing"
+  },
+  { 
+    name: "Cost Accounting and Reporting (CAaR)", 
+    link: "https://drive.google.com/drive/folders/1B1nM0lHsYxnDXx2zb__FIMZUTn0XZYWD?usp=sharing", 
+    color: "from-emerald-400 to-green-600", 
+    icon: "💰",
+    description: "Financial reporting and cost analysis"
+  },
+  { 
+    name: "Quantitative Analysis for Business (QAfB)", 
+    link: "https://drive.google.com/drive/folders/1vZJI5P9RMN7f6es0FlVzmJcx6iLCoOIX?usp=sharing", 
+    color: "from-amber-400 to-yellow-600", 
+    icon: "📈",
+    description: "Statistical methods for business decisions"
+  },
+  { 
+    name: "English 2 (E2)", 
+    link: "https://drive.google.com/drive/folders/1xpr4bzFPYgELNALqAmvy2S3eZjJyR6Bm?usp=sharing", 
+    color: "from-violet-400 to-purple-600", 
+    icon: "📝",
+    description: "Advanced business communication skills"
+  },
+  { 
+    name: "Hindi 2 (H2)", 
+    link: "https://drive.google.com/drive/folders/1DRWPhHwJCsoBOu7VYs1Uww66f4RIpbgA?usp=sharing", 
+    color: "from-pink-400 to-fuchsia-600", 
+    icon: "🗣️",
+    description: "Hindi language and communication"
+  },
+  { 
+    name: "Environmental Studies (ES)", 
+    link: "https://drive.google.com/drive/folders/1XCu-mAGisJSPIDmdpbIaagE3k48oWqJQ?usp=sharing", 
+    color: "from-orange-400 to-amber-600", 
+    icon: "🌳",
+    description: "Ecology and sustainable business practices"
+  }
+];
+
+export default function BBAFiles() {
+  const [password, setPassword] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredSubjects, setFilteredSubjects] = useState(subjects);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [theme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    setFilteredSubjects(
+      subjects.filter(subject => 
+        subject.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm]);
+
+  const handleLogin = () => {
+    if (password === "Professor") {
+      setIsAdmin(true);
+    } else {
+      alert("Incorrect password");
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { 
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 to-indigo-900">
+        <div className="text-center">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h1 className="text-4xl font-bold text-white mb-6">BBA Notes Hub</h1>
+          </motion.div>
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 360, 0],
+              borderRadius: ["20%", "50%", "20%"]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-500 mx-auto rounded-xl flex items-center justify-center"
+          >
+            <span className="text-3xl">📚</span>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="mt-4 text-indigo-200"
+          >
+            Loading your academic resources...
+          </motion.p>
+        </div>
+      </div>
+    );
+  }
+
+  const backgroundStyle = theme === "dark" 
+    ? "bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900" 
+    : "bg-gradient-to-br from-indigo-100 via-white to-purple-100";
+
+  const textStyle = theme === "dark" ? "text-white" : "text-slate-800";
+
+  return (
+    <div className={`p-6 min-h-screen ${backgroundStyle} flex flex-col items-center ${textStyle}`}>
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="mb-10 text-center relative"
+      >
+        <motion.div
+          className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-purple-500 opacity-20 blur-xl"
+          animate={{
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-blue-500 opacity-20 blur-xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.5
+          }}
+        />
+        <h1 className="text-6xl font-bold mb-2 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-600">BBA Notes Hub</h1>
+        <p className={`text-xl ${theme === "dark" ? "text-indigo-200" : "text-indigo-600"}`}>
+          Your ultimate resource for academic excellence
+        </p>
+        
+        <div className="mt-4 flex justify-center">
+          <motion.button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className={`px-3 py-1 rounded-full text-sm flex items-center gap-1 ${
+              theme === "dark" 
+                ? "bg-slate-700 text-white hover:bg-slate-600" 
+                : "bg-white text-slate-800 hover:bg-slate-100 border border-slate-200"
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </motion.button>
+        </div>
+      </motion.div>
+      
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="w-full max-w-3xl mb-10"
+      >
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search subjects..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`p-4 pl-12 w-full rounded-full shadow-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+              theme === "dark" ? "bg-slate-800 bg-opacity-50 backdrop-blur-lg text-white border border-slate-700" : "bg-white"
+            }`}
+          />
+          <span className="absolute left-4 top-4 text-gray-500">🔍</span>
+        </div>
+      </motion.div>
+      
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl"
+      >
+        <AnimatePresence>
+          {filteredSubjects.map((subject, index) => (
+            <motion.div 
+              key={index}
+              variants={cardVariants}
+              whileHover={{ 
+                scale: 1.05,
+                boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+                transition: { duration: 0.3 }
+              }}
+              onHoverStart={() => setHoveredCard(index)}
+              onHoverEnd={() => setHoveredCard(null)}
+              className={`p-6 shadow-2xl bg-gradient-to-br ${subject.color} ${
+                theme === "dark" ? "bg-opacity-80" : "bg-opacity-90"
+              } backdrop-blur-lg text-white rounded-2xl overflow-hidden relative border border-white border-opacity-10`}
+            >
+              <motion.div 
+                className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-white opacity-10"
+                animate={{
+                  scale: hoveredCard === index ? [1, 1.4, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: hoveredCard === index ? Infinity : 0,
+                  ease: "easeInOut",
+                }}
+              />
+              
+              <motion.span 
+                className="text-5xl absolute top-4 right-4 opacity-70"
+                initial={{ scale: 0, rotate: -20 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.2 + index * 0.1 }}
+              >
+                {subject.icon}
+              </motion.span>
+              
+              <h2 className="text-2xl font-bold mb-2">{subject.name}</h2>
+              <p className="text-white text-opacity-80 mb-4 text-sm">{subject.description}</p>
+              
+              <div className="mt-4">
+                <motion.a
+                  href={subject.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center px-4 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all ${
+                    theme === "dark" 
+                      ? "bg-white text-slate-800 hover:bg-opacity-90" 
+                      : "bg-slate-800 text-white hover:bg-slate-700"
+                  }`}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="mr-2">📚</span> View Notes
+                </motion.a>
+              </div>
+              
+              <motion.div 
+                className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-white opacity-10"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  x: [0, 5, 0],
+                  y: [0, 5, 0],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: index * 0.2
+                }}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+        className={`mt-12 p-6 backdrop-blur-md rounded-xl shadow-2xl w-full max-w-md border ${
+          theme === "dark" 
+            ? "bg-slate-800 bg-opacity-30 border-slate-700 text-white" 
+            : "bg-white border-slate-200 text-slate-800"
+        }`}
+      >
+        {isAdmin ? (
+          <div>
+            <h2 className="text-2xl font-bold mb-4 flex items-center">
+              <span className="mr-2">🔐</span> Admin Panel
+            </h2>
+            <select
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              className={`p-3 border rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+                theme === "dark" 
+                  ? "bg-slate-700 border-slate-600 text-white" 
+                  : "bg-white border-slate-300 text-slate-800"
+              }`}
+            >
+              <option value="">Select Subject</option>
+              {subjects.map((subject, index) => (
+                <option key={index} value={subject.link}>{subject.name}</option>
+              ))}
+            </select>
+            {selectedSubject && (
+              <motion.a
+                href={selectedSubject}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex justify-center items-center py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <span className="mr-2">📤</span> Upload to Drive
+              </motion.a>
+            )}
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-2xl font-bold mb-4 flex items-center">
+              <span className="mr-2">🔒</span> Admin Access
+            </h2>
+            <div className="flex flex-col">
+              <input
+                type="password"
+                placeholder="Enter Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-400 ${
+                  theme === "dark" 
+                    ? "bg-slate-700 border-slate-600 text-white" 
+                    : "bg-white border-slate-300 text-slate-800"
+                }`}
+              />
+              <motion.button
+                onClick={handleLogin}
+                className="py-3 px-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <span className="mr-2">🔑</span> Login
+              </motion.button>
+            </div>
+          </div>
+        )}
+      </motion.div>
+      
+      <motion.div
+        className="fixed bottom-6 right-6 z-10"
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ delay: 1, type: "spring" }}
+      >
+        <motion.a
+          href="https://wa.me/919972819262"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center p-4 rounded-full text-white font-bold shadow-lg bg-gradient-to-r from-green-500 to-emerald-600"
+          whileHover={{ 
+            scale: 1.15,
+            boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+          }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <span className="text-2xl">💬</span>
+        </motion.a>
+        <motion.div
+          className="absolute inset-0 rounded-full bg-green-500 opacity-30 blur-md"
+          animate={{
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </motion.div>
+      
+      <motion.footer
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className={`mt-16 text-center ${theme === "dark" ? "text-white text-opacity-60" : "text-slate-600"} pb-4`}
+      >
+        <div className="flex justify-center space-x-6 mb-3">
+          {["📧", "📱", "🌐"].map((icon, i) => (
+            <motion.span 
+              key={i}
+              className="cursor-pointer"
+              whileHover={{ scale: 1.2, y: -2 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {icon}
+            </motion.span>
+          ))}
+        </div>
+        <p>© 2025 BBA Notes Hub | All Rights Reserved</p>
+        <p className="text-sm mt-1">Designed with ❤️ for BBA students</p>
+      </motion.footer>
+    </div>
+  );
+}
